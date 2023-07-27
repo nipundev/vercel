@@ -91,6 +91,7 @@ export async function serverBuild({
   routesManifest,
   staticPages,
   lambdaPages,
+  localePrefixed404,
   nextVersion,
   lambdaAppPaths,
   canUsePreviewMode,
@@ -112,6 +113,7 @@ export async function serverBuild({
   baseDir: string;
   canUsePreviewMode: boolean;
   omittedPrerenderRoutes: Set<string>;
+  localePrefixed404: boolean;
   staticPages: { [key: string]: FileFsRef };
   lambdaAppPaths: { [key: string]: FileFsRef };
   lambdaPages: { [key: string]: FileFsRef };
@@ -215,12 +217,12 @@ export async function serverBuild({
       ? path.posix.join(entryDirectory, '_errors/404')
       : undefined;
 
-  if (!static404Page && i18n) {
-    static404Page = staticPages[
-      path.posix.join(entryDirectory, i18n.defaultLocale, '404')
-    ]
-      ? path.posix.join(entryDirectory, i18n.defaultLocale, '404')
-      : undefined;
+  if (
+    !static404Page &&
+    i18n &&
+    staticPages[path.posix.join(entryDirectory, i18n.defaultLocale, '404')]
+  ) {
+    static404Page = path.posix.join(entryDirectory, i18n.defaultLocale, '404');
   }
 
   if (!hasStatic500 && i18n) {
@@ -967,6 +969,7 @@ export async function serverBuild({
         if (
           i18n &&
           !isPrerender &&
+          !group.isAppRouter &&
           (!isCorrectLocaleAPIRoutes ||
             !(pageNoExt === 'api' || pageNoExt.startsWith('api/')))
         ) {
@@ -1004,6 +1007,7 @@ export async function serverBuild({
     isSharedLambdas: false,
     canUsePreviewMode,
     static404Page,
+    localePrefixed404,
     hasPages404: routesManifest.pages404,
     isCorrectNotFoundRoutes,
     isEmptyAllowQueryForPrendered,
@@ -1070,7 +1074,8 @@ export async function serverBuild({
       prerenderManifest,
       routesManifest,
       true,
-      isCorrectLocaleAPIRoutes
+      isCorrectLocaleAPIRoutes,
+      inversedAppPathManifest
     )
   );
 

@@ -1,5 +1,17 @@
 # @vercel/next
 
+## 3.9.2
+
+### Patch Changes
+
+- Fix pages/404 gsp + i18n case ([#10258](https://github.com/vercel/vercel/pull/10258))
+
+## 3.9.1
+
+### Patch Changes
+
+- Fix pages and app router i18n handling ([#10243](https://github.com/vercel/vercel/pull/10243))
+
 ## 3.9.0
 
 ### Minor Changes
