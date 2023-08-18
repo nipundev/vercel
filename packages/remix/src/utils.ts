@@ -1,4 +1,5 @@
 import semver from 'semver';
+import { execSync } from 'child_process';
 import { existsSync, promises as fs } from 'fs';
 import { basename, dirname, join, relative, resolve, sep } from 'path';
 import { pathToRegexp, Key } from 'path-to-regexp';
@@ -78,7 +79,8 @@ function isEdgeRuntime(runtime: string): boolean {
 export function getResolvedRouteConfig(
   route: ConfigRoute,
   routes: RouteManifest,
-  configs: Map<ConfigRoute, BaseFunctionConfig | null>
+  configs: Map<ConfigRoute, BaseFunctionConfig | null>,
+  isHydrogen2: boolean
 ): ResolvedRouteConfig {
   let runtime: ResolvedRouteConfig['runtime'] | undefined;
   let regions: ResolvedRouteConfig['regions'];
@@ -107,8 +109,8 @@ export function getResolvedRouteConfig(
     regions = Array.from(new Set(regions)).sort();
   }
 
-  if (runtime === 'edge') {
-    return { runtime, regions };
+  if (isHydrogen2 || runtime === 'edge') {
+    return { runtime: 'edge', regions };
   }
 
   if (regions && !Array.isArray(regions)) {
@@ -274,6 +276,7 @@ export function addDependencies(
     debug(` - ${name}`);
   }
   const args: string[] = [];
+
   if (cliType === 'npm' || cliType === 'pnpm') {
     args.push('install');
     if (opts.saveDev) {
@@ -285,7 +288,21 @@ export function addDependencies(
     if (opts.saveDev) {
       args.push('--dev');
     }
+    const yarnVersion = execSync('yarn -v', { encoding: 'utf8' }).trim();
+    const isYarnV1 = semver.satisfies(yarnVersion, '1');
+    if (isYarnV1) {
+      // Ignoring workspace check is only needed on Yarn v1
+      args.push('--ignore-workspace-root-check');
+    }
   }
+
+  // Don't fail if pnpm is being run at the workspace root
+  if (cliType === 'pnpm' && opts.cwd) {
+    if (existsSync(join(opts.cwd, 'pnpm-workspace.yaml'))) {
+      args.push('--workspace-root');
+    }
+  }
+
   return spawnAsync(cliType, args.concat(names), opts);
 }
 
