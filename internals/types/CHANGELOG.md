@@ -1,5 +1,20 @@
 # @vercel-internals/types
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`9e3827c78`](https://github.com/vercel/vercel/commit/9e3827c785e1bc45f2bed421132167381481770f)]:
+  - @vercel/build-utils@7.1.0
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`37f5c6270`](https://github.com/vercel/vercel/commit/37f5c6270058336072ca733673ea72dd6c56bd6a)]:
+  - @vercel/build-utils@7.0.0
+  - @vercel/routing-utils@3.0.0
+
 ## 1.0.6
 
 ### Patch Changes

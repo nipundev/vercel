@@ -1,5 +1,32 @@
 # @vercel/remix-builder
 
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`9e3827c78`](https://github.com/vercel/vercel/commit/9e3827c785e1bc45f2bed421132167381481770f)]:
+  - @vercel/build-utils@7.1.0
+
+## 2.0.1
+
+### Patch Changes
+
+- Update `@remix-run/dev` fork to v1.19.3 ([#10381](https://github.com/vercel/vercel/pull/10381))
+
+## 2.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: Drop Node.js 14, bump minimum to Node.js 16 ([#10369](https://github.com/vercel/vercel/pull/10369))
+
+### Patch Changes
+
+- Only add workspace check flag for Yarn v1 ([#10364](https://github.com/vercel/vercel/pull/10364))
+
+- Updated dependencies [[`37f5c6270`](https://github.com/vercel/vercel/commit/37f5c6270058336072ca733673ea72dd6c56bd6a)]:
+  - @vercel/build-utils@7.0.0
+  - @vercel/static-config@3.0.0
+
 ## 1.10.1
 
 ### Patch Changes

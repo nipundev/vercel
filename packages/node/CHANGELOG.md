@@ -1,5 +1,40 @@
 # @vercel/node
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`9e3827c78`](https://github.com/vercel/vercel/commit/9e3827c785e1bc45f2bed421132167381481770f)]:
+  - @vercel/build-utils@7.1.0
+
+## 3.0.2
+
+### Patch Changes
+
+- upgrade edge-runtime ([#10385](https://github.com/vercel/vercel/pull/10385))
+
+- use `undici` instead of `node-fetch` ([#10387](https://github.com/vercel/vercel/pull/10387))
+
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`96f99c714`](https://github.com/vercel/vercel/commit/96f99c714715651b85eb7a03f58ecc9e1316d156)]:
+  - @vercel/error-utils@2.0.1
+
+## 3.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: Drop Node.js 14, bump minimum to Node.js 16 ([#10369](https://github.com/vercel/vercel/pull/10369))
+
+### Patch Changes
+
+- Updated dependencies [[`37f5c6270`](https://github.com/vercel/vercel/commit/37f5c6270058336072ca733673ea72dd6c56bd6a)]:
+  - @vercel/build-utils@7.0.0
+  - @vercel/error-utils@2.0.0
+  - @vercel/static-config@3.0.0
+
 ## 2.15.10
 
 ### Patch Changes

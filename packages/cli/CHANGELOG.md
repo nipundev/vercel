@@ -1,5 +1,71 @@
 # vercel
 
+## 32.1.0
+
+### Minor Changes
+
+- Improve error messages for JSON parse failures ([#10396](https://github.com/vercel/vercel/pull/10396))
+
+### Patch Changes
+
+- Updated dependencies [[`9e3827c78`](https://github.com/vercel/vercel/commit/9e3827c785e1bc45f2bed421132167381481770f)]:
+  - @vercel/build-utils@7.1.0
+  - @vercel/node@3.0.3
+  - @vercel/remix-builder@2.0.2
+  - @vercel/static-build@2.0.3
+
+## 32.0.2
+
+### Patch Changes
+
+- Remove use of mri preferring use of arg package ([#10389](https://github.com/vercel/vercel/pull/10389))
+
+- upgrade edge-runtime ([#10385](https://github.com/vercel/vercel/pull/10385))
+
+- Update dns commands to new structure ([#10379](https://github.com/vercel/vercel/pull/10379))
+
+- Updated dependencies [[`09446a8fe`](https://github.com/vercel/vercel/commit/09446a8fe8b8201dbe3ead3ca645ef0aa1833b6b), [`597a8a817`](https://github.com/vercel/vercel/commit/597a8a81764c39e70c65b98e78bf4c3827a779a7), [`442232686`](https://github.com/vercel/vercel/commit/44223268651f1bbd5c6f2b0b315239685dd5716e), [`3f6d99470`](https://github.com/vercel/vercel/commit/3f6d99470db86681e006d66507f32afcea086b41), [`37e93a91a`](https://github.com/vercel/vercel/commit/37e93a91a8659934eac7f5cd441b310511bf5646)]:
+  - @vercel/next@4.0.1
+  - @vercel/node@3.0.2
+  - @vercel/remix-builder@2.0.1
+  - @vercel/static-build@2.0.2
+
+## 32.0.1
+
+### Patch Changes
+
+- Add `--git-branch` to pull command help output ([#10382](https://github.com/vercel/vercel/pull/10382))
+
+- Update new help structure to support subcommands ([#10372](https://github.com/vercel/vercel/pull/10372))
+
+- Migrate certs command to new structure ([#10377](https://github.com/vercel/vercel/pull/10377))
+
+- Updated dependencies []:
+  - @vercel/static-build@2.0.1
+  - @vercel/node@3.0.1
+
+## 32.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: Drop Node.js 14, bump minimum to Node.js 16 ([#10369](https://github.com/vercel/vercel/pull/10369))
+
+### Patch Changes
+
+- text wrap help output description ([#10370](https://github.com/vercel/vercel/pull/10370))
+
+- Updated dependencies [[`37f5c6270`](https://github.com/vercel/vercel/commit/37f5c6270058336072ca733673ea72dd6c56bd6a), [`09174df6c`](https://github.com/vercel/vercel/commit/09174df6cfbe697ea13e75468b9cd3c6ec7ad01c)]:
+  - @vercel/build-utils@7.0.0
+  - @vercel/go@3.0.0
+  - @vercel/hydrogen@1.0.0
+  - @vercel/next@4.0.0
+  - @vercel/node@3.0.0
+  - @vercel/python@4.0.0
+  - @vercel/redwood@2.0.0
+  - @vercel/remix-builder@2.0.0
+  - @vercel/ruby@2.0.0
+  - @vercel/static-build@2.0.0
+
 ## 31.4.0
 
 ### Minor Changes

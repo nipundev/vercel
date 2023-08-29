@@ -1,5 +1,19 @@
 # @vercel/next
 
+## 4.0.1
+
+### Patch Changes
+
+- fix RSC matching behavior & 404 status code on `fallback: false` ([#10388](https://github.com/vercel/vercel/pull/10388))
+
+- Add handling to leverage RSC prefetch outputs ([#10390](https://github.com/vercel/vercel/pull/10390))
+
+## 4.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: Drop Node.js 14, bump minimum to Node.js 16 ([#10369](https://github.com/vercel/vercel/pull/10369))
+
 ## 3.9.4
 
 ### Patch Changes
