@@ -1,5 +1,72 @@
 # vercel
 
+## 32.2.1
+
+### Patch Changes
+
+- Update @vercel/fun@1.1.0 ([#10477](https://github.com/vercel/vercel/pull/10477))
+
+- [node] upgrade edge-runtime ([#10451](https://github.com/vercel/vercel/pull/10451))
+
+- Updated dependencies [[`6784e7751`](https://github.com/vercel/vercel/commit/6784e77516ba180a691e3c48323b32bb4506d7b6), [`a8ad17626`](https://github.com/vercel/vercel/commit/a8ad176262ef822860ce338927e6f959961d2d32), [`0ee089a50`](https://github.com/vercel/vercel/commit/0ee089a501ebb78901c4afe1658e794917998f8f), [`f15cba614`](https://github.com/vercel/vercel/commit/f15cba6148a0cdb6975db7724775c35ab7d929b2), [`b265e13d4`](https://github.com/vercel/vercel/commit/b265e13d40d541b77148fa79ac60b4c4dd10974c), [`50e04dd85`](https://github.com/vercel/vercel/commit/50e04dd8584664c842a86c15d92d654f4ea8dcbb), [`45b73c7e8`](https://github.com/vercel/vercel/commit/45b73c7e86458564dc0bab007f6f6365c4c4ab5d), [`a732d30c8`](https://github.com/vercel/vercel/commit/a732d30c8409f96f59ea5406e974a6c4186cc130), [`9d64312aa`](https://github.com/vercel/vercel/commit/9d64312aaaa875a4e193b7602c50e5dc68979aad), [`6baefc825`](https://github.com/vercel/vercel/commit/6baefc825ad7cfc3a5edce31cb4244721452f753), [`989f0d813`](https://github.com/vercel/vercel/commit/989f0d813910d8d67ed355de93018f1dcd91b6ba), [`d8bc570f6`](https://github.com/vercel/vercel/commit/d8bc570f604950d97156d4f33c8accecf3b3b28f)]:
+  - @vercel/go@3.0.1
+  - @vercel/redwood@2.0.2
+  - @vercel/remix-builder@2.0.4
+  - @vercel/hydrogen@1.0.1
+  - @vercel/static-build@2.0.5
+  - @vercel/build-utils@7.2.0
+  - @vercel/next@4.0.3
+  - @vercel/node@3.0.5
+  - @vercel/python@4.0.1
+  - @vercel/ruby@2.0.2
+
+## 32.2.0
+
+### Minor Changes
+
+- show instant preview url on deploy ([#10458](https://github.com/vercel/vercel/pull/10458))
+
+### Patch Changes
+
+- N, not n. ([#10460](https://github.com/vercel/vercel/pull/10460))
+
+- Fix team URL on `vercel help switch` ([#10466](https://github.com/vercel/vercel/pull/10466))
+
+- Migrates the vc env command to the command data structure for use in the help output. ([#10429](https://github.com/vercel/vercel/pull/10429))
+
+- Update domains command to new structure ([#10427](https://github.com/vercel/vercel/pull/10427))
+
+- Updated semver dependency ([#10411](https://github.com/vercel/vercel/pull/10411))
+
+- migrate `rollback` command structure for help output ([#10426](https://github.com/vercel/vercel/pull/10426))
+
+- migrate `inti` command structure for help output ([#10428](https://github.com/vercel/vercel/pull/10428))
+
+- Remove mri workaround ([#10452](https://github.com/vercel/vercel/pull/10452))
+
+- migrate dev command structure for help output ([#10433](https://github.com/vercel/vercel/pull/10433))
+
+- Update secrets to more recent structure ([#10461](https://github.com/vercel/vercel/pull/10461))
+
+- Migrate `vc secrets` to new help command structure ([#10435](https://github.com/vercel/vercel/pull/10435))
+
+- migrate `promote` command structure for help output ([#10425](https://github.com/vercel/vercel/pull/10425))
+
+- migrate `git` command structure for help output ([#10431](https://github.com/vercel/vercel/pull/10431))
+
+- Update project command to new data structure ([#10432](https://github.com/vercel/vercel/pull/10432))
+
+- migrate teams command ([#10434](https://github.com/vercel/vercel/pull/10434))
+
+- Updated dependencies [[`5609a1187`](https://github.com/vercel/vercel/commit/5609a1187be9d6cf8d5f16825690c5ea72f17dc5), [`caaba0d68`](https://github.com/vercel/vercel/commit/caaba0d6855eff4350b6a04acc3ea502025bff8f), [`1b4de4a98`](https://github.com/vercel/vercel/commit/1b4de4a986f7a612aac834ebae3ec7bb9e9b8cf8), [`c3c54d6e6`](https://github.com/vercel/vercel/commit/c3c54d6e695ec078777c4b1f4f23acbeee3c3b09), [`6aa0aa4e6`](https://github.com/vercel/vercel/commit/6aa0aa4e65b81903f4fce677a198dcfaebee744b), [`e43191b18`](https://github.com/vercel/vercel/commit/e43191b1866da70a3dab3815a3f2176942240ef3), [`fc1e13c09`](https://github.com/vercel/vercel/commit/fc1e13c09928c654410b373fc1775c2b63c6ef4a)]:
+  - @vercel/build-utils@7.1.1
+  - @vercel/next@4.0.2
+  - @vercel/static-build@2.0.4
+  - @vercel/redwood@2.0.1
+  - @vercel/remix-builder@2.0.3
+  - @vercel/ruby@2.0.1
+  - @vercel/node@3.0.4
+
 ## 32.1.0
 
 ### Minor Changes

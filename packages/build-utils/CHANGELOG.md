@@ -1,5 +1,25 @@
 # @vercel/build-utils
 
+## 7.2.0
+
+### Minor Changes
+
+- Add new optional prerender field: experimentalStreamingLambdaPath ([#10476](https://github.com/vercel/vercel/pull/10476))
+
+- [build-utils] Add zero config detection for bun package manager ([#10486](https://github.com/vercel/vercel/pull/10486))
+
+### Patch Changes
+
+- add `experimentalBypassFor` field to Prerender ([#10481](https://github.com/vercel/vercel/pull/10481))
+
+## 7.1.1
+
+### Patch Changes
+
+- add descriptions to NodeVersion properties ([#10403](https://github.com/vercel/vercel/pull/10403))
+
+- Updated semver dependency ([#10411](https://github.com/vercel/vercel/pull/10411))
+
 ## 7.1.0
 
 ### Minor Changes

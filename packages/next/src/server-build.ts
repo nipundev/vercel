@@ -45,6 +45,8 @@ import {
   UnwrapPromise,
   getOperationType,
   FunctionsConfigManifestV1,
+  RSC_CONTENT_TYPE,
+  RSC_PREFETCH_SUFFIX,
 } from './utils';
 import {
   nodeFileTrace,
@@ -168,7 +170,6 @@ export async function serverBuild({
     }
   }
 
-  const APP_PREFETCH_SUFFIX = '.prefetch.rsc';
   let appRscPrefetches: UnwrapPromise<ReturnType<typeof glob>> = {};
   let appBuildTraces: UnwrapPromise<ReturnType<typeof glob>> = {};
   let appDir: string | null = null;
@@ -176,7 +177,18 @@ export async function serverBuild({
   if (appPathRoutesManifest) {
     appDir = path.join(pagesDir, '../app');
     appBuildTraces = await glob('**/*.js.nft.json', appDir);
-    appRscPrefetches = await glob(`**/*${APP_PREFETCH_SUFFIX}`, appDir);
+    appRscPrefetches = await glob(`**/*${RSC_PREFETCH_SUFFIX}`, appDir);
+
+    const rscContentTypeHeader =
+      routesManifest?.rsc?.contentTypeHeader || RSC_CONTENT_TYPE;
+
+    // ensure all appRscPrefetches have a contentType since this is used by Next.js
+    // to determine if it's a valid response
+    for (const value of Object.values(appRscPrefetches)) {
+      if (!value.contentType) {
+        value.contentType = rscContentTypeHeader;
+      }
+    }
   }
 
   const isCorrectNotFoundRoutes = semver.gte(
@@ -437,11 +449,19 @@ export async function serverBuild({
 
       if (i18n) {
         for (const locale of i18n.locales) {
-          const static404File =
-            staticPages[path.posix.join(entryDirectory, locale, '/404')] ||
-            new FileFsRef({
+          let static404File =
+            staticPages[path.posix.join(entryDirectory, locale, '/404')];
+
+          if (!static404File) {
+            static404File = new FileFsRef({
               fsPath: path.join(pagesDir, locale, '/404.html'),
             });
+            if (!fs.existsSync(static404File.fsPath)) {
+              static404File = new FileFsRef({
+                fsPath: path.join(pagesDir, '/404.html'),
+              });
+            }
+          }
           requiredFiles[path.relative(baseDir, static404File.fsPath)] =
             static404File;
         }
@@ -1066,8 +1086,7 @@ export async function serverBuild({
     canUsePreviewMode,
     prerenderManifest.bypassToken || '',
     true,
-    middleware.dynamicRouteMap,
-    inversedAppPathManifest
+    middleware.dynamicRouteMap
   ).then(arr =>
     localizeDynamicRoutes(
       arr,
@@ -1081,6 +1100,32 @@ export async function serverBuild({
       inversedAppPathManifest
     )
   );
+
+  const pagesPlaceholderRscEntries: Record<string, FileBlob> = {};
+
+  if (appDir) {
+    // since we attempt to rewrite all paths to an .rsc variant,
+    // we need to create dummy rsc outputs for all pages entries
+    // this is so that an RSC request to a `pages` entry will match
+    // rather than falling back to a catchall `app` entry
+    // on the nextjs side, invalid RSC response payloads will correctly trigger an mpa navigation
+    const pagesManifest = path.join(
+      entryPath,
+      outputDirectory,
+      `server/pages-manifest.json`
+    );
+
+    const pagesData = await fs.readJSON(pagesManifest);
+    const pagesEntries = Object.keys(pagesData);
+
+    for (const page of pagesEntries) {
+      const pathName = page.startsWith('/') ? page.slice(1) : page;
+      pagesPlaceholderRscEntries[`${pathName}.rsc`] = new FileBlob({
+        data: '{}',
+        contentType: 'application/json',
+      });
+    }
+  }
 
   const { staticFiles, publicDirectoryFiles, staticDirectoryFiles } =
     await getStaticFiles(entryPath, entryDirectory, outputDirectory);
@@ -1212,10 +1257,9 @@ export async function serverBuild({
       if (ogRoute.endsWith('/route')) {
         continue;
       }
-      route = path.posix.join(
-        './',
-        entryDirectory,
-        route === '/' ? '/index' : route
+      route = normalizeIndexOutput(
+        path.posix.join('./', entryDirectory, route === '/' ? '/index' : route),
+        true
       );
 
       if (lambdas[route]) {
@@ -1241,6 +1285,7 @@ export async function serverBuild({
       ...publicDirectoryFiles,
       ...lambdas,
       ...appRscPrefetches,
+      ...pagesPlaceholderRscEntries,
       // Prerenders may override Lambdas -- this is an intentional behavior.
       ...prerenders,
       ...staticPages,
@@ -1493,7 +1538,7 @@ export async function serverBuild({
                     dest: path.posix.join(
                       '/',
                       entryDirectory,
-                      '/index.prefetch.rsc'
+                      `/index${RSC_PREFETCH_SUFFIX}`
                     ),
                     headers: { vary: rscVaryHeader },
                     continue: true,
@@ -1514,7 +1559,7 @@ export async function serverBuild({
                     dest: path.posix.join(
                       '/',
                       entryDirectory,
-                      `/$1${APP_PREFETCH_SUFFIX}`
+                      `/$1${RSC_PREFETCH_SUFFIX}`
                     ),
                     headers: { vary: rscVaryHeader },
                     continue: true,
@@ -1593,7 +1638,7 @@ export async function serverBuild({
               src: path.posix.join(
                 '/',
                 entryDirectory,
-                `/index${APP_PREFETCH_SUFFIX}`
+                `/index${RSC_PREFETCH_SUFFIX}`
               ),
               dest: path.posix.join('/', entryDirectory, '/index.rsc'),
               has: [
@@ -1609,7 +1654,7 @@ export async function serverBuild({
               src: `^${path.posix.join(
                 '/',
                 entryDirectory,
-                `/(.+?)${APP_PREFETCH_SUFFIX}(?:/)?$`
+                `/(.+?)${RSC_PREFETCH_SUFFIX}(?:/)?$`
               )}`,
               dest: path.posix.join('/', entryDirectory, '/$1.rsc'),
               has: [
@@ -1624,72 +1669,22 @@ export async function serverBuild({
           ]
         : []),
 
-      ...(appDir
-        ? [
-            // check routes that end in `.rsc` to see if a page with the resulting name (sans-.rsc) exists in the filesystem
-            // if so, we want to match that page instead. (This matters when prefetching a pages route while on an appdir route)
-            {
-              src: `^${path.posix.join('/', entryDirectory, '/(.*)\\.rsc$')}`,
-              dest: path.posix.join('/', entryDirectory, '/$1'),
-              has: [
-                {
-                  type: 'header',
-                  key: rscHeader,
-                },
-              ],
-              ...(rscPrefetchHeader
-                ? {
-                    missing: [
-                      {
-                        type: 'header',
-                        key: rscPrefetchHeader,
-                      },
-                    ],
-                  }
-                : {}),
-              check: true,
-            } as Route,
-          ]
-        : []),
-
       // These need to come before handle: miss or else they are grouped
       // with that routing section
       ...afterFilesRewrites,
 
-      ...(appDir
-        ? [
-            // rewrite route back to `.rsc`, but skip checking fs
-            {
-              src: `^${path.posix.join(
-                '/',
-                entryDirectory,
-                '/((?!.+\\.rsc).+?)(?:/)?$'
-              )}`,
-              has: [
-                {
-                  type: 'header',
-                  key: rscHeader,
-                },
-              ],
-              dest: path.posix.join('/', entryDirectory, '/$1.rsc'),
-              headers: { vary: rscVaryHeader },
-              continue: true,
-              override: true,
-            },
-          ]
-        : []),
-
-      // make sure 404 page is used when a directory is matched without
-      // an index page
       { handle: 'resource' },
 
       ...fallbackRewrites,
 
+      // make sure 404 page is used when a directory is matched without
+      // an index page
       { src: path.posix.join('/', entryDirectory, '.*'), status: 404 },
+
+      { handle: 'miss' },
 
       // We need to make sure to 404 for /_next after handle: miss since
       // handle: miss is called before rewrites and to prevent rewriting /_next
-      { handle: 'miss' },
       {
         src: path.posix.join(
           '/',

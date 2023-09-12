@@ -48,6 +48,9 @@ export const MIB = 1024 * KIB;
 
 export const prettyBytes = (n: number) => bytes(n, { unitSeparator: ' ' });
 
+export const RSC_CONTENT_TYPE = 'x-component';
+export const RSC_PREFETCH_SUFFIX = '.prefetch.rsc';
+
 // Identify /[param]/ in route string
 // eslint-disable-next-line no-useless-escape
 const TEST_DYNAMIC_ROUTE = /\/\[[^\/]+?\](?=\/|$)/;
@@ -305,8 +308,7 @@ export async function getDynamicRoutes(
   canUsePreviewMode?: boolean,
   bypassToken?: string,
   isServerMode?: boolean,
-  dynamicMiddlewareRouteMap?: Map<string, RouteWithSrc>,
-  appPathRoutesManifest?: Record<string, string>
+  dynamicMiddlewareRouteMap?: Map<string, RouteWithSrc>
 ): Promise<RouteWithSrc[]> {
   if (routesManifest) {
     switch (routesManifest.version) {
@@ -379,17 +381,15 @@ export async function getDynamicRoutes(
               },
             ];
           }
+          routes.push({
+            ...route,
+            src: route.src.replace(
+              new RegExp(escapeStringRegexp('(?:/)?$')),
+              '(?:\\.rsc)(?:/)?$'
+            ),
+            dest: route.dest?.replace(/($|\?)/, '.rsc$1'),
+          });
 
-          if (appPathRoutesManifest?.[page]) {
-            routes.push({
-              ...route,
-              src: route.src.replace(
-                new RegExp(escapeStringRegexp('(?:/)?$')),
-                '(?:\\.rsc)(?:/)?$'
-              ),
-              dest: route.dest?.replace(/($|\?)/, '.rsc$1'),
-            });
-          }
           routes.push(route);
           continue;
         }
@@ -2161,7 +2161,7 @@ export const onPrerenderRoute =
         routesManifest?.rsc?.varyHeader ||
         'RSC, Next-Router-State-Tree, Next-Router-Prefetch';
       const rscContentTypeHeader =
-        routesManifest?.rsc?.contentTypeHeader || 'text/x-component';
+        routesManifest?.rsc?.contentTypeHeader || RSC_CONTENT_TYPE;
 
       let sourcePath: string | undefined;
       if (`/${outputPathPage}` !== srcRoute && srcRoute) {
@@ -2347,7 +2347,7 @@ export function normalizeIndexOutput(
   outputName: string,
   isServerMode: boolean
 ) {
-  if (outputName !== '/index' && isServerMode) {
+  if (outputName !== 'index' && outputName !== '/index' && isServerMode) {
     return outputName.replace(/\/index$/, '');
   }
   return outputName;
@@ -2522,6 +2522,29 @@ function normalizeRegions(regions: Regions): undefined | string | string[] {
   }
 
   return newRegions;
+}
+
+export function normalizeEdgeFunctionPath(
+  shortPath: string,
+  appPathRoutesManifest: Record<string, string>
+) {
+  if (
+    shortPath.startsWith('app/') &&
+    (shortPath.endsWith('/page') ||
+      shortPath.endsWith('/route') ||
+      shortPath === 'app/_not-found')
+  ) {
+    const ogRoute = shortPath.replace(/^app\//, '/');
+    shortPath = (
+      appPathRoutesManifest[ogRoute] ||
+      shortPath.replace(/(^|\/)(page|route)$/, '')
+    ).replace(/^\//, '');
+
+    if (!shortPath || shortPath === '/') {
+      shortPath = 'index';
+    }
+  }
+  return shortPath;
 }
 
 export async function getMiddlewareBundle({
@@ -2702,27 +2725,19 @@ export async function getMiddlewareBundle({
       //    app/index/page -> index/index
       if (shortPath.startsWith('pages/')) {
         shortPath = shortPath.replace(/^pages\//, '');
-      } else if (
-        shortPath.startsWith('app/') &&
-        (shortPath.endsWith('/page') ||
-          shortPath.endsWith('/route') ||
-          shortPath === 'app/_not-found')
-      ) {
-        const ogRoute = shortPath.replace(/^app\//, '/');
-        shortPath = (
-          appPathRoutesManifest[ogRoute] ||
-          shortPath.replace(/(^|\/)(page|route)$/, '')
-        ).replace(/^\//, '');
-
-        if (!shortPath || shortPath === '/') {
-          shortPath = 'index';
-        }
+      } else {
+        shortPath = normalizeEdgeFunctionPath(shortPath, appPathRoutesManifest);
       }
 
       if (routesManifest?.basePath) {
-        shortPath = path.posix
-          .join(routesManifest.basePath, shortPath)
-          .replace(/^\//, '');
+        shortPath = normalizeIndexOutput(
+          path.posix.join(
+            './',
+            routesManifest?.basePath,
+            shortPath.replace(/^\//, '')
+          ),
+          true
+        );
       }
 
       worker.edgeFunction.name = shortPath;
