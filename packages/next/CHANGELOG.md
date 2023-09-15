@@ -1,5 +1,19 @@
 # @vercel/next
 
+## 4.0.5
+
+### Patch Changes
+
+- missed a prerender for experimentalBypassFor ([#10504](https://github.com/vercel/vercel/pull/10504))
+
+## 4.0.4
+
+### Patch Changes
+
+- provide `experimentalBypassFor` to Prerender from manifest ([#10497](https://github.com/vercel/vercel/pull/10497))
+
+- next.js: move app route handlers in their own lambda grouping, add flag to use bundled runtime ([#10485](https://github.com/vercel/vercel/pull/10485))
+
 ## 4.0.3
 
 ### Patch Changes
