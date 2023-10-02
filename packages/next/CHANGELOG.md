@@ -1,5 +1,27 @@
 # @vercel/next
 
+## 4.0.8
+
+### Patch Changes
+
+- Fix edge case for setting `__NEXT_PRIVATE_PREBUNDLED_REACT` ([#10568](https://github.com/vercel/vercel/pull/10568))
+
+## 4.0.7
+
+### Patch Changes
+
+- Internal variants ([#10549](https://github.com/vercel/vercel/pull/10549))
+
+- Update `@vercel/nft` to v0.24.1. ([#10540](https://github.com/vercel/vercel/pull/10540))
+
+- Build package using "esbuild" ([#10482](https://github.com/vercel/vercel/pull/10482))
+
+## 4.0.6
+
+### Patch Changes
+
+- Fix feature flag detection ([#10531](https://github.com/vercel/vercel/pull/10531))
+
 ## 4.0.5
 
 ### Patch Changes

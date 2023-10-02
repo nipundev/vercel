@@ -12,10 +12,12 @@ import {
   debug,
   glob,
   Files,
+  Flag,
   BuildResultV2Typical as BuildResult,
 } from '@vercel/build-utils';
 import { Route, RouteWithHandle } from '@vercel/routing-utils';
 import { MAX_AGE_ONE_YEAR } from '.';
+import { MAX_UNCOMPRESSED_LAMBDA_SIZE } from './constants';
 import {
   NextRequiredServerFilesManifest,
   NextImagesManifest,
@@ -36,7 +38,6 @@ import {
   PseudoFile,
   detectLambdaLimitExceeding,
   outputFunctionFileSizeInfo,
-  MAX_UNCOMPRESSED_LAMBDA_SIZE,
   normalizeIndexOutput,
   getImagesConfig,
   getNextServerPath,
@@ -45,6 +46,7 @@ import {
   UnwrapPromise,
   getOperationType,
   FunctionsConfigManifestV1,
+  VariantsManifest,
   RSC_CONTENT_TYPE,
   RSC_PREFETCH_SUFFIX,
 } from './utils';
@@ -111,6 +113,7 @@ export async function serverBuild({
   isCorrectLocaleAPIRoutes,
   lambdaCompressedByteLimit,
   requiredServerFilesManifest,
+  variantsManifest,
 }: {
   appPathRoutesManifest?: Record<string, string>;
   dynamicPages: string[];
@@ -151,6 +154,7 @@ export async function serverBuild({
   imagesManifest?: NextImagesManifest;
   prerenderManifest: NextPrerenderedRoutes;
   requiredServerFilesManifest: NextRequiredServerFilesManifest;
+  variantsManifest: VariantsManifest | null;
 }): Promise<BuildResult> {
   lambdaPages = Object.assign({}, lambdaPages, lambdaAppPaths);
 
@@ -313,7 +317,7 @@ export async function serverBuild({
 
     const useBundledServer =
       semver.gte(nextVersion, BUNDLED_SERVER_NEXT_VERSION) &&
-      process.env.VERCEL_NEXT_BUNDLED_SERVER;
+      process.env.VERCEL_NEXT_BUNDLED_SERVER === '1';
 
     if (useBundledServer) {
       debug('Using bundled Next.js server');
@@ -629,7 +633,7 @@ export async function serverBuild({
       );
 
     const appLauncher = launcher.replace(
-      '// pre-next-server-target',
+      '// @preserve pre-next-server-target',
       `process.env.__NEXT_PRIVATE_PREBUNDLED_REACT = "${
         requiredServerFilesManifest.config?.experimental?.serverActions
           ? 'experimental'
@@ -645,7 +649,7 @@ export async function serverBuild({
       // Next.js isn't aware of it and it isn't included in the
       // x-matched-path header
       launcher = launcher.replace(
-        '// entryDirectory handler',
+        '// @preserve entryDirectory handler',
         `req.url = req.url.replace(/^${path.posix
           .join('/', entryDirectory)
           .replace(/\//g, '\\/')}/, '')`
@@ -1344,6 +1348,14 @@ export async function serverBuild({
     routesManifest?.rsc?.varyHeader ||
     'RSC, Next-Router-State-Tree, Next-Router-Prefetch';
   const appNotFoundPath = path.posix.join('.', entryDirectory, '_not-found');
+
+  const flags: Flag[] = variantsManifest
+    ? Object.entries(variantsManifest).map(([key, value]) => ({
+        key,
+        ...value,
+        metadata: value.metadata ?? {},
+      }))
+    : [];
 
   return {
     wildcard: wildcardConfig,
@@ -2046,5 +2058,6 @@ export async function serverBuild({
           ]),
     ],
     framework: { version: nextVersion },
+    flags,
   };
 }

@@ -79,6 +79,8 @@ function mockLoginApi(req: http.IncomingMessage, res: http.ServerResponse) {
     query.email === email
   ) {
     res.end(JSON.stringify({ token }));
+  } else if (method === 'GET' && pathname === '/v2/user') {
+    res.end(JSON.stringify({ user: { email } }));
   } else {
     res.statusCode = 405;
     res.end(JSON.stringify({ code: 'method_not_allowed' }));
@@ -1150,6 +1152,22 @@ test('[vc build] should build project with `@vercel/static-build`', async () => 
   expect(builds.target).toBe('preview');
   expect(builds.builds[0].src).toBe('package.json');
   expect(builds.builds[0].use).toBe('@vercel/static-build');
+});
+
+test('[vc build] should build project with `@vercel/speed-insights`', async () => {
+  try {
+    process.env.VERCEL_ANALYTICS_ID = '123';
+
+    const directory = await setupE2EFixture('vc-build-speed-insights');
+    const output = await execCli(binaryPath, ['build'], { cwd: directory });
+    expect(output.exitCode, formatOutput(output)).toBe(0);
+    expect(output.stderr).toContain('Build Completed in .vercel/output');
+    expect(output.stderr).toContain(
+      'The `VERCEL_ANALYTICS_ID` environment variable is deprecated and will be removed in a future release. Please remove it from your environment variables'
+    );
+  } finally {
+    delete process.env.VERCEL_ANALYTICS_ID;
+  }
 });
 
 test('[vc build] should not include .vercel when distDir is "."', async () => {

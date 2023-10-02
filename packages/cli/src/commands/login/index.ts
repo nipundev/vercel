@@ -19,9 +19,13 @@ import Client from '../../util/client';
 import { LoginResult } from '../../util/login/types';
 import { help } from '../help';
 import { loginCommand } from './command';
+import { updateCurrentTeamAfterLogin } from '../../util/login/update-current-team-after-login';
 
 export default async function login(client: Client): Promise<number> {
   const { output } = client;
+
+  // user is not currently authenticated on this machine
+  const isInitialLogin = !client.authConfig.token;
 
   const argv = getArgs(client.argv.slice(2), {
     '--oob': Boolean,
@@ -67,19 +71,23 @@ export default async function login(client: Client): Promise<number> {
     return result;
   }
 
-  // If the token was upgraded (not a new login), then don't modify
-  // the current scope.
-  if (!client.authConfig.token) {
-    if (result.teamId) {
-      // SSO login, so set the current scope to the appropriate Team
-      client.config.currentTeam = result.teamId;
-    } else {
-      delete client.config.currentTeam;
-    }
-  }
-
   // Save the user's authentication token to the configuration file.
   client.authConfig.token = result.token;
+
+  if (result.teamId) {
+    client.config.currentTeam = result.teamId;
+  } else {
+    delete client.config.currentTeam;
+  }
+
+  // If we have a brand new login, update `currentTeam`
+  if (isInitialLogin) {
+    await updateCurrentTeamAfterLogin(
+      client,
+      output,
+      client.config.currentTeam
+    );
+  }
 
   writeToAuthConfigFile(client.authConfig);
   writeToConfigFile(client.config);

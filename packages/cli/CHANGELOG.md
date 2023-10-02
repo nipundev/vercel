@@ -1,5 +1,54 @@
 # vercel
 
+## 32.3.1
+
+### Patch Changes
+
+- Use "esbuild" to build CLI ([#10555](https://github.com/vercel/vercel/pull/10555))
+
+- Updated dependencies [[`9f63ca60a`](https://github.com/vercel/vercel/commit/9f63ca60ad914af0f7ba18c9bbe1656eeea68a0a), [`e3f9faf51`](https://github.com/vercel/vercel/commit/e3f9faf513bd97900d8966f2f1116fc3ca07221b)]:
+  - @vercel/next@4.0.8
+  - @vercel/remix-builder@2.0.8
+
+## 32.3.0
+
+### Minor Changes
+
+- [cli] Support northstar users ([#10535](https://github.com/vercel/vercel/pull/10535))
+
+### Patch Changes
+
+- Internal variants ([#10549](https://github.com/vercel/vercel/pull/10549))
+
+- [speed insights] Prepare for migration to new speed insights package ([#10500](https://github.com/vercel/vercel/pull/10500))
+
+- Updated dependencies [[`b0898a665`](https://github.com/vercel/vercel/commit/b0898a66591d5296dc38ffcf0e8345c9338b72f3), [`10d4e51ac`](https://github.com/vercel/vercel/commit/10d4e51ac57b76f05ddc0bf3adf220e2490244fc), [`decdf27fb`](https://github.com/vercel/vercel/commit/decdf27fb5ca914fe50a9320c4fd50ef79d2fbb3), [`f5ca497b7`](https://github.com/vercel/vercel/commit/f5ca497b7522a2dad637cef238da9716ac133057), [`ab329f0fe`](https://github.com/vercel/vercel/commit/ab329f0fe88e9cb72607d0cba41f5e168d77e077), [`d0d052011`](https://github.com/vercel/vercel/commit/d0d0520111264434d57d5920de0f622f6a2588dc), [`9bb3067de`](https://github.com/vercel/vercel/commit/9bb3067de28be77f3ce268a31a7aa6184836dfb1)]:
+  - @vercel/static-build@2.0.7
+  - @vercel/node@3.0.6
+  - @vercel/build-utils@7.2.1
+  - @vercel/next@4.0.7
+  - @vercel/python@4.0.2
+  - @vercel/redwood@2.0.3
+  - @vercel/remix-builder@2.0.7
+  - @vercel/go@3.0.2
+
+## 32.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`849eedf0f`](https://github.com/vercel/vercel/commit/849eedf0f2841211e4175d374f1cf01330bf9611), [`f6f16b034`](https://github.com/vercel/vercel/commit/f6f16b0347bac9f5c33c79ccb1fb9fd9d254cae5), [`3035e18fb`](https://github.com/vercel/vercel/commit/3035e18fb67dfe7031e235a74136a41948f86d5a), [`cb784aeb9`](https://github.com/vercel/vercel/commit/cb784aeb9c9e4eddf1c65b61849a87edb1117af1)]:
+  - @vercel/next@4.0.6
+  - @vercel/remix-builder@2.0.6
+
+## 32.2.4
+
+### Patch Changes
+
+- Add support for bun detection in monorepo ([#10511](https://github.com/vercel/vercel/pull/10511))
+
+- Updated dependencies [[`1b6f3a0f6`](https://github.com/vercel/vercel/commit/1b6f3a0f6534f71c7486a4e33ac199f1da330626)]:
+  - @vercel/static-build@2.0.6
+
 ## 32.2.3
 
 ### Patch Changes

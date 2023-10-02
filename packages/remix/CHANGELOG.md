@@ -1,5 +1,27 @@
 # @vercel/remix-builder
 
+## 2.0.8
+
+### Patch Changes
+
+- Update `@remix-run/dev` fork to v2.0.1 ([#10566](https://github.com/vercel/vercel/pull/10566))
+
+## 2.0.7
+
+### Patch Changes
+
+- Update `@vercel/nft` to v0.24.1. ([#10540](https://github.com/vercel/vercel/pull/10540))
+
+## 2.0.6
+
+### Patch Changes
+
+- Fix ESM mode for Edge runtime ([#10530](https://github.com/vercel/vercel/pull/10530))
+
+- Update `@remix-run/dev` fork to v2.0.0 ([#10526](https://github.com/vercel/vercel/pull/10526))
+
+- Fixes for Remix v2 ([#10525](https://github.com/vercel/vercel/pull/10525))
+
 ## 2.0.5
 
 ### Patch Changes

@@ -22,6 +22,7 @@ import type { Env } from '@vercel/build-utils';
 const streamPipeline = promisify(pipeline);
 
 const versionMap = new Map([
+  ['1.21', '1.21.1'],
   ['1.20', '1.20.2'],
   ['1.19', '1.19.6'],
   ['1.18', '1.18.10'],
@@ -150,7 +151,7 @@ export async function getAnalyzedEntrypoint({
   if (!analyzed) {
     const err = new Error(
       `Could not find an exported function in "${entrypoint}"
-Learn more: https://vercel.com/docs/runtimes#official-runtimes/go
+Learn more: https://vercel.com/docs/functions/serverless-functions/runtimes/go
       `
     );
     console.error(err.message);
